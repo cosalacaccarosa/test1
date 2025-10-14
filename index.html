@@ -139,18 +139,23 @@
       return await res.json();
     }
 
-    $doRegister.addEventListener('click', async () => {
-      const candidate = digitsOnly($reg.value);
-      if(!/^\\d{7,12}$/.test(candidate)) { setStatus('Inserisci 7–12 cifre decodificate dai DTMF.', 'warn'); return; }
-      try{
-        setStatus('⏳ Verifica accesso…');
-        const data = await checkWithWorker(candidate);
-        if(!data.ok){ setStatus('❌ Accesso negato. Ricontrolla la sequenza di toni.', 'warn'); $ship.classList.add('hidden'); return; }
-        setStatus('✅ Accesso consentito. Imposta la spedizione.', 'ok');
-        $ship.classList.remove('hidden');
-        $rxReg.textContent = candidate;
-      }catch(e){ setStatus('Errore di rete. Riprovare tra poco.', 'warn'); }
-    });
+$doRegister.addEventListener('click', async () => {
+  const candidate = digitsOnly($reg.value);
+  console.log("DEBUG candidate:", candidate, "len:", candidate.length);
+  if(!/^\d{7,12}$/.test(candidate)) {
+    setStatus(`Inserisci 7–12 cifre (ora: ${candidate.length}).`, 'warn');
+    return;
+  }
+  try{
+    setStatus('⏳ Verifica accesso…');
+    const data = await checkWithWorker(candidate);
+    if(!data.ok){ setStatus('❌ Accesso negato. Ricontrolla la sequenza di toni.', 'warn'); $ship.classList.add('hidden'); return; }
+    setStatus('✅ Accesso consentito. Imposta la spedizione.', 'ok');
+    $ship.classList.remove('hidden');
+    $rxReg.textContent = candidate;
+  }catch(e){ setStatus('Errore di rete. Riprovare tra poco.', 'warn'); }
+});
+
 
     $finalize.addEventListener('click', () => {
       const place = ($place.value||'').trim();

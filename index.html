@@ -3,184 +3,223 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pizza Sasà TIME AOO· Spedisci pizze dove e quando vuoi</title>
-  <meta name="description" content="Pizza SASA" />
+  <title>TeleTime · Archivio Linee</title>
+  <meta name="description" content="TeleTime – crea la tua linea e invia un messaggio all'Archivio" />
   <style>
-    :root{ --bg:#0b0f14; --panel:#111722; --text:#e8f0ff; --muted:#93a4c0; --accent:#ffb703; --accent2:#fb8500; --ok:#aaf0d1; --warn:#ff7481; --line:#ffffff18 }
+    :root{
+      --bg: #0b0f14;
+      --panel: #111722;
+      --text: #e8f0ff;
+      --muted: #93a4c0;
+      --accent: #7bdcff;
+      --accent-2:#69ffa4;
+      --warn: #ff7481;
+      --ok: #aaf0d1;
+      --brand: #22a6f2;
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans;background:radial-gradient(1200px 800px at 20% -10%, #142034, var(--bg));color:var(--text);line-height:1.5}
-    .container{max-width:980px;margin:0 auto;padding:24px}
-    header{text-align:center;padding:28px 0 18px;position:relative}
-    .brand{display:inline-block;font-weight:900;letter-spacing:.02em;text-transform:uppercase;font-size:clamp(22px,4vw,34px);color:var(--accent);text-shadow:0 0 20px #fb850055}
-    .subtitle{color:var(--muted);margin-top:6px}
-    .panel{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03)}
-    .banner{border:1px dashed rgba(255,255,255,.25);border-radius:14px;padding:14px;margin:12px 0;background:rgba(251,133,0,.08);color:var(--accent2)}
-    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
-    label{display:block;font-weight:700;margin:6px 0;color:var(--muted)}
-    input[type='text'], input[type='date'], input[type='time']{
-      width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
-      background:#0e1420;color:var(--text);outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);font-size:16px;
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% -10%, #142034, var(--bg));
+      color:var(--text);
+      line-height:1.5;
     }
-    .btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font-weight:800;background:linear-gradient(180deg,#ffb703,#fb8500);color:#0b0f14;cursor:pointer;box-shadow:0 8px 20px rgba(251,133,0,.35);transition:transform .08s ease, box-shadow .2s ease;white-space:nowrap}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(251,133,0,.5)}
+    .container{max-width:980px;margin:0 auto;padding:24px}
+    header{
+      padding:28px 0 18px;
+      text-align:center;
+      position:relative;
+    }
+    .brand{
+      display:inline-block;
+      font-weight:800;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      font-size: clamp(20px, 3.2vw, 28px);
+      color:var(--accent);
+      text-shadow:0 0 18px rgba(123,220,255,.25);
+    }
+    .subtitle{color:var(--muted);margin-top:6px}
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .banner{
+      border:1px dashed rgba(255,255,255,.2);
+      border-radius:14px;
+      padding:16px;
+      margin:16px 0 8px;
+      background: rgba(123,220,255,.06);
+      color: var(--accent);
+    }
+    .row{display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap}
+    label{display:block;font-weight:600;margin:6px 0;color:var(--muted)}
+    input[type="text"], textarea{
+      width:100%;
+      padding:14px 16px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#0e1420;
+      color:var(--text);
+      outline:none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+      font-size:16px;
+    }
+    textarea{min-height:120px;resize:vertical}
+    .btn{
+      appearance:none; border:0; border-radius:12px; padding:12px 16px; font-weight:700;
+      background:linear-gradient(180deg, #23b0ff, #1c84ff);
+      color:white; cursor:pointer; box-shadow:0 8px 20px rgba(35,176,255,.35);
+      transition: transform .08s ease, box-shadow .2s ease; white-space:nowrap
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 12px 26px rgba(35,176,255,.45)}
     .btn:active{transform:translateY(0)}
-    .btn-secondary{background:linear-gradient(180deg,#2b3344,#1c2432);color:var(--text);box-shadow:0 8px 20px rgba(0,0,0,.35)}
-    .status{margin-top:10px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace}
-    .status.warn{color:var(--warn)} .status.ok{color:var(--ok)}
+    .btn-secondary{
+      background:linear-gradient(180deg, #2b3344, #1c2432);
+      color:var(--text);
+      box-shadow:0 8px 20px rgba(0,0,0,.35);
+    }
+    .status{margin-top:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+    .status.warn{color:var(--warn)}
+    .status.ok{color:var(--ok)}
     .hidden{display:none}
     .divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);margin:22px 0}
-    .telex{background:#10161f;border-left:4px solid var(--ok);padding:12px 14px;border-radius:10px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;color:#d9ffe8;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-    footer{padding:22px 0;color:var(--muted);text-align:center;font-size:14px}
+    .crt{position:relative}
+    .crt::after{
+      content:'';position:absolute;inset:0;
+      background: repeating-linear-gradient(transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 3px);
+      pointer-events:none; mix-blend-mode:screen
+    }
+    .telex{
+      background:#10161f; border-left:4px solid var(--accent-2); padding:12px 14px; border-radius:8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      color:#d9ffe8; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    footer{padding:22px 0; color:var(--muted); text-align:center; font-size:14px}
     .small{font-size:12px;color:var(--muted)}
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <div class="brand">Pizza TaxiIIII</div>
-      <div class="subtitle">Spedisci pizze dove e <em>quando</em> vuoi · Accesso con numero dal nastro</div>
+    <header class="crt">
+      <div class="brand">Benvenuto in TeleTime</div>
+      <div class="subtitle">Archivio Linee · Crea la tua linea e invia un messaggio… indietro.</div>
     </header>
 
     <section class="panel">
-      <!-- Gate di accesso -->
-      <div class="banner">🎧 <strong>Accesso riservato</strong> — Inserisci il <em>numero del nastro</em> (AOOO) per entrare nel sistema spedizioni.</div>
+      <div class="banner">📡 <strong>Crea il tuo numero di telefono</strong> — Inserisci la sequenza che hai ascoltato nel nastro d'archivio.</div>
+
       <div class="row">
         <div style="flex:1 1 360px">
-          <label for="regNumber">Numero del nastro (solo cifre)</label>
-          <input id="regNumber" type="text" inputmode="numeric" autocomplete="off" placeholder="es. 0812345678" aria-describedby="hintReg" />
-          <div id="hintReg" class="small">È la sequenza di toni DTMF che si sente nell'audio.</div>
+          <label for="number">Numero (solo cifre)</label>
+          <input id="number" type="text" inputmode="numeric" autocomplete="off" placeholder="es. 0812345678" aria-describedby="hint" />
+          <div id="hint" class="small">Suggerimento: usa la sequenza di toni DTMF ascoltata nel video 1975.</div>
         </div>
-        <button id="doRegister" class="btn" style="flex:0 0 auto;">ACCEDI</button>
+        <button id="mint" class="btn" style="flex:0 0 auto;">CREA LINEA</button>
       </div>
+
       <div id="status" class="status" aria-live="polite"></div>
 
-      <!-- Form spedizione (si sblocca dopo l'accesso) -->
-      <div id="ship" class="hidden">
+      <div id="compose" class="hidden">
         <div class="divider"></div>
-        <div class="banner">🍕 <strong>Crea spedizione</strong> — Imposta <em>luogo</em>, <em>data</em> e <em>ora</em> della consegna.</div>
-
-        <div class="row">
-          <div style="flex:2 1 420px">
-            <label for="place">Luogo di consegna</label>
-            <input id="place" type="text" placeholder="(es.) Piazza XX Settembre, bar Carillon" />
-          </div>
-          <div style="flex:1 1 180px">
-            <label for="date">Data</label>
-            <input id="date" type="date" />
-          </div>
-          <div style="flex:1 1 140px">
-            <label for="time">Ora</label>
-            <input id="time" type="time" />
-          </div>
-        </div>
-
+        <div class="banner">✅ <strong>Linea creata</strong> — Ora puoi scrivere il messaggio da spedire all'Archivio.</div>
+        <label for="msg">Messaggio per l'Archivio</label>
+        <textarea id="msg" maxlength="240" placeholder="Scrivi solo ciò che manca… (max 240 caratteri)"></textarea>
         <div class="row" style="margin-top:10px">
-          <button id="finalize" class="btn">Conferma spedizione</button>
+          <button id="copy" class="btn-secondary">Copia messaggio</button>
+          <a id="call" class="btn" href="#" target="_self" rel="noopener">Chiama ora</a>
+          <button id="done" class="btn">Ho lasciato il messaggio</button>
         </div>
+        <div id="counter" class="small" style="margin-top:8px">0 / 240</div>
       </div>
 
-      <!-- Ricevuta -->
       <div id="receipt" class="hidden" style="margin-top:16px">
         <div class="divider"></div>
         <div class="telex">
-          <div><strong>PIZZA TAXI · CONFERMA</strong></div>
+          <div><strong>TELEX · ARCHIVIO 1975</strong></div>
           <div id="rx-ts" class="small">Data: —</div>
-          <div>Registrazione: <span id="rx-reg"></span></div>
-          <div>Luogo: <span id="rx-place"></span></div>
-          <div>Consegna: <span id="rx-when"></span></div>
+          <div>Combinazione: <span id="rx-num"></span> — <span style="color:#a0ffd0">SPEDITA</span></div>
+          <div>Messaggio: <span id="rx-msg"></span></div>
         </div>
-        <div class="small" style="margin-top:8px">Mostra questa conferma allo <strong>Sportello Archivio</strong>.</div>
+        <div class="small" style="margin-top:8px">Mostra questa ricevuta allo sportello Archivio per il timbro <em>Loop chiuso</em>.</div>
         <div class="row" style="margin-top:10px">
-          <button id="reset" class="btn-secondary">Nuova spedizione</button>
-          <button id="print" class="btn-secondary">Stampa</button>
+          <button id="reset" class="btn-secondary">Reset</button>
         </div>
       </div>
     </section>
 
-    <footer>© Pizza Taxi — prototipo statico. Nessun dato inviato a server finché non abiliti il Worker.</footer>
+    <footer>© TeleTime — la verifica del numero avviene lato server.</footer>
   </div>
 
   <script>
-    // ====== CONFIG ======
-    // Quando crei il Cloudflare Worker, incolla qui il suo URL.
-    // Esempio: const CHECK_URL = "https://check.tuosubdomain.workers.dev";
-    const CHECK_URL = "https://cold-cell-f338.salvatorestaianoapple.workers.dev"; // se vuoto → "solo frizione"
+  const CHECK_URL = "https://cold-cell-f338.salvatorestaianoapple.workers.dev";
 
-    // ====== UTILS ======
-    const el = id => document.getElementById(id);
-    const $reg = el('regNumber');
-    const $doRegister = el('doRegister');
-    const $status = el('status');
-    const $ship = el('ship');
-    const $place = el('place');
-    const $date = el('date');
-    const $time = el('time');
-    const $finalize = el('finalize');
-    const $receipt = el('receipt');
-    const $rxTs = el('rx-ts');
-    const $rxReg = el('rx-reg');
-    const $rxPlace = el('rx-place');
-    const $rxWhen = el('rx-when');
-    const $reset = el('reset');
-    const $print = el('print');
+  const el = id=>document.getElementById(id);
+  const $number=el('number'), $mint=el('mint'), $status=el('status'),
+        $compose=el('compose'), $msg=el('msg'), $copy=el('copy'),
+        $call=el('call'), $done=el('done'), $receipt=el('receipt'),
+        $rxTs=el('rx-ts'), $rxNum=el('rx-num'), $rxMsg=el('rx-msg'),
+        $counter=el('counter'), $reset=el('reset');
 
-    const digitsOnly = v => (v||'').replace(/\\D+/g,'');
-    const setStatus = (t, type='') => { $status.className = 'status' + (type? ' '+type:''); $status.textContent = t; };
-    const fmtNow = () => new Date().toLocaleString('it-IT', { dateStyle:'medium', timeStyle:'short' });
+  const digitsOnly = v => (v||'').split('').filter(c => c>='0' && c<='9').join('');
+  const setStatus = (t, type='') => { $status.className = 'status' + (type? ' '+type:''); $status.textContent = t; };
+  const fmtNow = () => new Date().toLocaleString('it-IT', { dateStyle:'medium', timeStyle:'short' });
 
-    // Preimposta una data scenica
-    (function(){ $date.value = '1975-09-15'; $time.value = '19:30'; })();
-
-    async function checkWithWorker(candidate){
-      if(!CHECK_URL) return { ok:true, mode:'friction' }; // niente verifica remota
-      const res = await fetch(CHECK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ candidate }) });
-      if(!res.ok) throw new Error('endpoint non raggiungibile');
-      return await res.json();
-    }
-
-$doRegister.addEventListener('click', async () => {
-  const candidate = digitsOnly($reg.value);
-  console.log("DEBUG candidate:", candidate, "len:", candidate.length);
-  if(!/^\d{7,12}$/.test(candidate)) {
-    setStatus(`Inserisci 7–12 cifre (ora: ${candidate.length}).`, 'warn');
-    return;
+  async function checkNumber(candidate){
+    const res = await fetch(CHECK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ candidate }) });
+    if(!res.ok) throw new Error('endpoint');
+    return await res.json();
   }
-  try{
-    setStatus('⏳ Verifica accesso…');
-    const data = await checkWithWorker(candidate);
-    if(!data.ok){ setStatus('❌ Accesso negato. Ricontrolla la sequenza di toni.', 'warn'); $ship.classList.add('hidden'); return; }
-    setStatus('✅ Accesso consentito. Imposta la spedizione.', 'ok');
-    $ship.classList.remove('hidden');
-    $rxReg.textContent = candidate;
-  }catch(e){ setStatus('Errore di rete. Riprovare tra poco.', 'warn'); }
-});
 
+  $mint.addEventListener('click', async () => {
+    const candidate = digitsOnly($number.value);
+    if(candidate.length < 7 || candidate.length > 12){
+      setStatus('Inserisci 7–12 cifre decodificate dai DTMF.', 'warn');
+      return;
+    }
+    try{
+      setStatus('⏳ Verifica disponibilità…');
+      const data = await checkNumber(candidate);
+      if(!data.ok){
+        setStatus('❌ Numero già esistente. Riprova con la sequenza del nastro.', 'warn');
+        $compose.classList.add('hidden'); $receipt.classList.add('hidden'); return;
+      }
+      setStatus('✅ Combinazione valida. Linea creata.', 'ok');
+      $compose.classList.remove('hidden'); $receipt.classList.add('hidden');
+      $call.href = 'tel:'+candidate; $rxNum.textContent = candidate; $msg.focus();
+    }catch(e){ setStatus('Errore di rete. Controlla l’URL del Worker e il CORS.', 'warn'); }
+  });
 
-    $finalize.addEventListener('click', () => {
-      const place = ($place.value||'').trim();
-      const date = $date.value; const time = $time.value;
-      if(!place){ setStatus('Specifica un luogo di consegna.', 'warn'); return; }
-      if(!date || !time){ setStatus('Imposta data e ora.', 'warn'); return; }
-      $rxTs.textContent = 'Conferma generata: ' + fmtNow();
-      $rxPlace.textContent = place;
-      $rxWhen.textContent = `${date} ${time}`;
-      $receipt.classList.remove('hidden');
-      setStatus('🧾 Spedizione registrata. Mostra la conferma al desk.', 'ok');
-      window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
-    });
+  $copy.addEventListener('click', async () => {
+    try{ await navigator.clipboard.writeText($msg.value || ''); setStatus('📋 Messaggio copiato negli appunti.'); }
+    catch(e){ setStatus('Impossibile copiare: consenti gli appunti o seleziona manualmente.', 'warn'); }
+  });
 
-    $reset.addEventListener('click', () => {
-      $place.value=''; $receipt.classList.add('hidden'); setStatus(''); window.scrollTo({ top: 0, behavior:'smooth' });
-    });
+  $msg.addEventListener('input', () => { const len = ($msg.value||'').length; $counter.textContent = `${len} / 240`; });
 
-    $print.addEventListener('click', () => window.print());
+  $done.addEventListener('click', () => {
+    const txt = ($msg.value||'').trim();
+    if(!txt){ setStatus('Scrivi il messaggio da spedire.', 'warn'); return; }
+    $rxMsg.textContent = txt;
+    $rxTs.textContent = 'Data: ' + fmtNow() + ' — Retro-marcatura 1975 completata';
+    $receipt.classList.remove('hidden');
+    setStatus('📨 Spedizione registrata. Mostra la ricevuta al desk Archivio.', 'ok');
+    window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
+  });
 
-    // Invio con Enter
-    $reg.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); $doRegister.click(); }});
-  </script>
+  $reset.addEventListener('click', () => {
+    $number.value=''; $msg.value=''; $counter.textContent='0 / 240';
+    $compose.classList.add('hidden'); $receipt.classList.add('hidden'); setStatus(''); $number.focus();
+  });
+
+  $number.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); $mint.click(); }});
+</script>
 </body>
 </html>
-
 
 

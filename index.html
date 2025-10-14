@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pizza Taxi · Spedisci pizze dove e quando vuoi</title>
-  <meta name="description" content="Accesso con numero DTMF e spedizione nel passato" />
+  <title>IT'S PIZZA TIME</title>
+  <meta name="description" content="Accesso con numero di telefono e spedizione nel tempo" />
   <style>
     :root{ --bg:#0b0f14; --panel:#111722; --text:#e8f0ff; --muted:#93a4c0; --accent:#ffb703; --accent2:#fb8500; --ok:#aaf0d1; --warn:#ff7481; --line:#ffffff18 }
     *{box-sizing:border-box}
@@ -38,18 +38,18 @@
 <body>
   <div class="container">
     <header>
-      <div class="brand">Pizza Taxi</div>
-      <div class="subtitle">Spedisci pizze dove e <em>quando</em> vuoi · Accesso con numero dal nastro</div>
+      <div class="brand">Pizza TIME</div>
+      <div class="subtitle">Spedisci pizze dove e <em>quando</em> vuoi · Accesso con numero di telefono</div>
     </header>
 
     <section class="panel">
       <!-- Gate di accesso -->
-      <div class="banner">🎧 <strong>Accesso riservato</strong> — Inserisci il <em>numero del nastro</em> (DTMF) per entrare nel sistema spedizioni.</div>
+      <div class="banner">🎧 <strong>Accesso riservato</strong> — Inserisci il <em>numero di telefono</em> </div>
       <div class="row">
         <div style="flex:1 1 360px">
-          <label for="regNumber">Numero del nastro (solo cifre)</label>
+          <label for="regNumber">Numero (solo cifre)</label>
           <input id="regNumber" type="text" inputmode="numeric" autocomplete="off" placeholder="es. 0812345678" aria-describedby="hintReg" />
-          <div id="hintReg" class="small">È la sequenza di toni DTMF che si sente nell'audio.</div>
+          <div id="hintReg" class="small"></div>
         </div>
         <button id="doRegister" class="btn" style="flex:0 0 auto;">ACCEDI</button>
       </div>
@@ -84,7 +84,7 @@
       <div id="receipt" class="hidden" style="margin-top:16px">
         <div class="divider"></div>
         <div class="telex">
-          <div><strong>PIZZA TAXI · CONFERMA</strong></div>
+          <div><strong>PIZZA TIME· CONFERMA</strong></div>
           <div id="rx-ts" class="small">Data: —</div>
           <div>Registrazione: <span id="rx-reg"></span></div>
           <div>Luogo: <span id="rx-place"></span></div>
@@ -98,7 +98,7 @@
       </div>
     </section>
 
-    <footer>© Pizza Taxi — prototipo statico. Le verifiche avvengono lato server.</footer>
+    <footer>© Pizza TIME — prototipo statico. Le verifiche avvengono lato server.</footer>
   </div>
 
   <script>

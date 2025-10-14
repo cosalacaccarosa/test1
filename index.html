@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pizza Taxi · Spedisci pizze dove e quando vuoi</title>
+  <meta name="description" content="Pizza Taxi — Registrati con il numero del nastro e spedisci una pizza... indietro." />
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:#111722; --text:#e8f0ff; --muted:#93a4c0;
+      --accent:#ffb703; --accent2:#fb8500; --ok:#aaf0d1; --warn:#ff7481; --line:#ffffff18;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans;background:radial-gradient(1200px 800px at 20% -10%, #142034, var(--bg));color:var(--text);line-height:1.5}
+    .container{max-width:1000px;margin:0 auto;padding:24px}
+    header{text-align:center;padding:26px 0 12px;position:relative}
+    .brand{display:inline-block;font-weight:900;letter-spacing:.02em;text-transform:uppercase;font-size:clamp(22px,4vw,34px);color:var(--accent);text-shadow:0 0 20px #fb850055}
+    .subtitle{color:var(--muted);margin-top:6px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03)}
+    .banner{border:1px dashed rgba(255,255,255,.25);border-radius:14px;padding:14px;margin:12px 0;background:rgba(251,133,0,.08);color:var(--accent2)}
+    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+    label{display:block;font-weight:700;margin:6px 0;color:var(--muted)}
+    input[type='text'], input[type='date'], input[type='time'], select, textarea{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+      background:#0e1420;color:var(--text);outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);font-size:16px;
+    }
+    textarea{min-height:110px;resize:vertical}
+    .btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font-weight:800;background:linear-gradient(180deg,#ffb703,#fb8500);color:#0b0f14;cursor:pointer;box-shadow:0 8px 20px rgba(251,133,0,.35);transition:transform .08s ease, box-shadow .2s ease;white-space:nowrap}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(251,133,0,.5)}
+    .btn:active{transform:translateY(0)}
+    .btn-secondary{background:linear-gradient(180deg,#2b3344,#1c2432);color:var(--text);box-shadow:0 8px 20px rgba(0,0,0,.35)}
+    .status{margin-top:10px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace}
+    .status.warn{color:var(--warn)} .status.ok{color:var(--ok)}
+    .hidden{display:none}
+    .divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);margin:22px 0}
+    .crt{position:relative}
+    .crt::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(transparent,transparent 2px,rgba(255,255,255,.03) 2px,rgba(255,255,255,.03) 3px);pointer-events:none;mix-blend-mode:screen}
+    .receipt{background:#10161f;border-left:4px solid var(--ok);padding:12px 14px;border-radius:10px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;color:#d9ffe8;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+    footer{padding:22px 0;color:var(--muted);text-align:center;font-size:14px}
+    .small{font-size:12px;color:var(--muted)}
+    .token{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#0f1a28;border:1px solid rgba(255,255,255,.12);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="crt">
+      <div class="brand">Pizza Taxi</div>
+      <div class="subtitle">Spedisci pizze dove e <em>quando</em> vuoi · Servizio Archivio 1975</div>
+    </header>
+
+    <section class="panel">
+      <div class="banner">🎧 Hai ascoltato il nastro. <strong>Registrati</strong> con il numero di telefono che si sente in DTMF.</div>
+
+      <div class="row">
+        <div style="flex:1 1 360px">
+          <label for="regNumber">Numero per la registrazione (solo cifre)</label>
+          <input id="regNumber" type="text" inputmode="numeric" autocomplete="off" placeholder="es. 0812345678" aria-describedby="hintReg" />
+          <div id="hintReg" class="small">È il numero <em>udito</em> nel messaggio di Salvatore. Decodificalo dai DTMF.</div>
+        </div>
+        <button id="doRegister" class="btn" style="flex:0 0 auto;">REGISTRATI</button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <div id="ship" class="hidden">
+        <div class="divider"></div>
+        <div class="banner">🍕 <strong>Crea spedizione</strong> — Scegli la pizza, il momento e allega il <em>codice richiesto</em>.</div>
+
+        <div class="row">
+          <div style="flex:1 1 220px">
+            <label for="pizza">Tipo di pizza</label>
+            <select id="pizza">
+              <option>Margherita</option>
+              <option>Marinara</option>
+              <option>Diavola</option>
+              <option>Quattro Formaggi</option>
+              <option>Capricciosa</option>
+              <option>Ortolana</option>
+            </select>
+          </div>
+          <div style="flex:1 1 180px">
+            <label for="date">Data di consegna</label>
+            <input id="date" type="date" />
+          </div>
+          <div style="flex:1 1 140px">
+            <label for="time">Ora</label>
+            <input id="time" type="time" />
+          </div>
+          <div style="flex:2 1 300px">
+            <label for="msg">Messaggio da consegnare</label>
+            <textarea id="msg" maxlength="200" placeholder="(es.) Grazie per aver lasciato il nastro."></textarea>
+            <div id="counter" class="small">0 / 200</div>
+          </div>
+          <div style="flex:1 1 220px">
+            <label for="code">Codice richiesto</label>
+            <input id="code" type="text" placeholder="inserisci il codice" />
+            <div class="small">È il codice che Salvatore dice di aver ricevuto.</div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <button id="copyOrder" class="btn-secondary">Copia ordine</button>
+          <button id="finalize" class="btn">Invia nel 1975</button>
+        </div>
+      </div>
+
+      <div id="receipt" class="hidden" style="margin-top:16px">
+        <div class="divider"></div>
+        <div class="receipt">
+          <div><strong>PIZZA TAXI · CONFERMA SPEDIZIONE</strong></div>
+          <div id="rx-ts" class="small">Data: —</div>
+          <div>Cliente (registro): <span id="rx-reg"></span></div>
+          <div>Ordine: <span id="rx-pizza"></span> — Consegna: <span id="rx-when"></span></div>
+          <div>Messaggio: <span id="rx-msg"></span></div>
+          <div>Codice: <span id="rx-code"></span></div>
+          <div>Token: <span id="rx-token"></span></div>
+        </div>
+        <div class="small" style="margin-top:8px">Mostra questa conferma allo <strong>Sportello Archivio</strong> per il timbro <em>Loop chiuso</em>.</div>
+        <div class="row" style="margin-top:10px">
+          <button id="reset" class="btn-secondary">Nuova spedizione</button>
+          <button id="print" class="btn-secondary">Stampa</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Pizza Taxi — prototipo statico. Nessun dato inviato a server, verifica al desk.</footer>
+  </div>
+
+  <script>
+    // ====== CONFIG ======
+    // Se in futuro abiliti Cloudflare Worker, metti qui l'URL dell'endpoint:
+    // es. const CHECK_URL = "https://check.<tuo-sottodominio>.workers.dev";
+    const CHECK_URL = null; // lasciato null => modalità "solo frizione" (no segreti nel sorgente)
+
+    // ====== UTILS ======
+    const el = id => document.getElementById(id);
+    const $reg = el('regNumber');
+    const $doRegister = el('doRegister');
+    const $status = el('status');
+    const $ship = el('ship');
+    const $pizza = el('pizza');
+    const $date = el('date');
+    const $time = el('time');
+    const $msg = el('msg');
+    const $code = el('code');
+    const $finalize = el('finalize');
+    const $copyOrder = el('copyOrder');
+    const $receipt = el('receipt');
+    const $rxTs = el('rx-ts');
+    const $rxReg = el('rx-reg');
+    const $rxPizza = el('rx-pizza');
+    const $rxWhen = el('rx-when');
+    const $rxMsg = el('rx-msg');
+    const $rxCode = el('rx-code');
+    const $rxToken = el('rx-token');
+    const $counter = el('counter');
+    const $reset = el('reset');
+    const $print = el('print');
+
+    const params = new URLSearchParams(location.search);
+    const teamId = (params.get('t')||'').toUpperCase().replace(/[^A-Z0-9_-]/g,'');
+
+    function digitsOnly(v){ return (v||'').replace(/\D+/g, ''); }
+    function setStatus(text, type=''){ $status.className = 'status' + (type? ' ' + type : ''); $status.textContent = text; }
+    function fmtNow(){ const d = new Date(); return d.toLocaleString('it-IT', { dateStyle:'medium', timeStyle:'short' }); }
+
+    // Token umano leggibile (persistito per sessione)
+    const ADJ = ['ambra','quieto','ombroso','segreto','fermo','rapido','lineare','oscuro','nitido','soffice'];
+    const NOUN= ['nastro','eco','telex','registro','cartiglio','lucchetto','chiostro','meridiana','valvola','quarzo'];
+    const pick = a => a[Math.floor(Math.random()*a.length)];
+    function makeToken(){ const num = Math.floor(Math.random()*90)+10; let t = `${pick(ADJ)}-${pick(NOUN)}-${num}`; if(teamId) t += `-${teamId}`; return t.toUpperCase(); }
+    const tokenKey = `pizzataxi_token_${teamId||'default'}`;
+    let token = localStorage.getItem(tokenKey) || makeToken();
+    localStorage.setItem(tokenKey, token);
+
+    // Preimposta data/ora (esempio: 1975-09-15 19:30)
+    (function presetWhen(){
+      const d = new Date(1975, 8, 15); // mesi 0-based
+      const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), x = String(d.getDate()).padStart(2,'0');
+      document.getElementById('date').value = `${y}-${m}-${x}`;
+      document.getElementById('time').value = '19:30';
+    })();
+
+    $msg.addEventListener('input', () => {
+      const len = ($msg.value||'').length;
+      $counter.textContent = `${len} / 200`;
+    });
+
+    async function checkWithWorker(candidate){
+      const res = await fetch(CHECK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ teamId, candidate }) });
+      if(!res.ok) throw new Error('endpoint non raggiungibile');
+      return await res.json();
+    }
+
+    $doRegister.addEventListener('click', async () => {
+      const candidate = digitsOnly($reg.value);
+      if(!/^\d{7,12}$/.test(candidate)){ setStatus('Inserisci 7–12 cifre decodificate dai DTMF.', 'warn'); return; }
+
+      // Modalità con Worker o fallback frizione
+      if (CHECK_URL){
+        try{
+          setStatus('⏳ Verifica numero…');
+          const data = await checkWithWorker(candidate);
+          if(!data.ok){ setStatus('❌ Numero non valido / già esistente. Riascolta il nastro.', 'warn'); document.getElementById('ship').classList.add('hidden'); return; }
+          // ok
+          token = data.callToken || token; localStorage.setItem(tokenKey, token);
+          setStatus('✅ Registrazione completata. Puoi creare la spedizione.', 'ok');
+          document.getElementById('ship').classList.remove('hidden'); document.getElementById('rx-reg').textContent = candidate;
+        }catch(e){ setStatus('Errore di rete. Riprovare tra poco.', 'warn'); }
+      } else {
+        // Frizione: nessun segreto nel codice, validazione al desk
+        setStatus('✅ Registrazione locale. (Verifica al desk.)', 'ok');
+        document.getElementById('ship').classList.remove('hidden'); document.getElementById('rx-reg').textContent = candidate;
+      }
+    });
+
+    document.getElementById('copyOrder').addEventListener('click', async () => {
+      const txt = JSON.stringify({
+        reg: digitsOnly(document.getElementById('regNumber').value),
+        pizza:document.getElementById('pizza').value,
+        date:document.getElementById('date').value,
+        time:document.getElementById('time').value,
+        msg:document.getElementById('msg').value,
+        code:document.getElementById('code').value,
+        token
+      }, null, 2);
+      try{ await navigator.clipboard.writeText(txt); setStatus('📋 Ordine copiato.', 'ok'); }catch{ setStatus('Copia non riuscita.', 'warn'); }
+    });
+
+    document.getElementById('finalize').addEventListener('click', () => {
+      const reg = digitsOnly(document.getElementById('regNumber').value);
+      if(!reg){ setStatus('Completa la registrazione.', 'warn'); return; }
+      if(!document.getElementById('code').value.trim()){ setStatus('Inserisci il codice richiesto.', 'warn'); return; }
+      const when = `${document.getElementById('date').value} ${document.getElementById('time').value}`;
+      document.getElementById('rx-ts').textContent = 'Conferma generata: ' + fmtNow() + ' — Retro-spedizione 1975 programmata';
+      document.getElementById('rx-reg').textContent = reg;
+      document.getElementById('rx-pizza').textContent = document.getElementById('pizza').value;
+      document.getElementById('rx-when').textContent = when;
+      document.getElementById('rx-msg').textContent = (document.getElementById('msg').value||'—').trim();
+      document.getElementById('rx-code').textContent = document.getElementById('code').value.trim();
+      document.getElementById('rx-token').textContent = token;
+      document.getElementById('receipt').classList.remove('hidden');
+      window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
+      setStatus('🧾 Conferma pronta. Porta la ricevuta allo Sportello Archivio.', 'ok');
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      document.getElementById('msg').value=''; document.getElementById('code').value='';
+      document.getElementById('receipt').classList.add('hidden'); document.getElementById('counter').textContent='0 / 200';
+      setStatus(''); window.scrollTo({ top: 0, behavior:'smooth' });
+    });
+
+    document.getElementById('print').addEventListener('click', () => { window.print(); });
+
+    // Invio con Enter nella registrazione
+    document.getElementById('regNumber').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('doRegister').click(); }});
+  </script>
+</body>
+</html>

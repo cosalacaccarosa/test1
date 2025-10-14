@@ -129,9 +129,9 @@
 
   <script>
     // ====== CONFIG ======
-    // Se in futuro abiliti Cloudflare Worker, metti qui l'URL dell'endpoint:
-    // es. const CHECK_URL = "https://check.<tuo-sottodominio>.workers.dev";
-    const CHECK_URL = null; // lasciato null => modalità "solo frizione" (no segreti nel sorgente)
+    // Se abiliti il Worker, imposta l'URL qui sotto. Finché è null: modalità "solo frizione".
+    // Esempio: const CHECK_URL = "https://check.tuosubdomain.workers.dev";
+    const CHECK_URL = null;
 
     // ====== UTILS ======
     const el = id => document.getElementById(id);
@@ -154,38 +154,32 @@
     const $rxMsg = el('rx-msg');
     const $rxCode = el('rx-code');
     const $rxToken = el('rx-token');
-    const $counter = el('counter');
     const $reset = el('reset');
     const $print = el('print');
+    const $counter = el('counter');
 
     const params = new URLSearchParams(location.search);
     const teamId = (params.get('t')||'').toUpperCase().replace(/[^A-Z0-9_-]/g,'');
 
-    function digitsOnly(v){ return (v||'').replace(/\D+/g, ''); }
-    function setStatus(text, type=''){ $status.className = 'status' + (type? ' ' + type : ''); $status.textContent = text; }
-    function fmtNow(){ const d = new Date(); return d.toLocaleString('it-IT', { dateStyle:'medium', timeStyle:'short' }); }
+    const digitsOnly = v => (v||'').replace(/\D+/g, '');
+    const setStatus = (text, type='') => { $status.className = 'status' + (type? ' ' + type : ''); $status.textContent = text; };
+    const fmtNow = () => new Date().toLocaleString('it-IT', { dateStyle:'medium', timeStyle:'short' });
 
-    // Token umano leggibile (persistito per sessione)
-    const ADJ = ['ambra','quieto','ombroso','segreto','fermo','rapido','lineare','oscuro','nitido','soffice'];
-    const NOUN= ['nastro','eco','telex','registro','cartiglio','lucchetto','chiostro','meridiana','valvola','quarzo'];
-    const pick = a => a[Math.floor(Math.random()*a.length)];
-    function makeToken(){ const num = Math.floor(Math.random()*90)+10; let t = `${pick(ADJ)}-${pick(NOUN)}-${num}`; if(teamId) t += `-${teamId}`; return t.toUpperCase(); }
+    // Token (leggibile) persistito per squadra
+    const ADJ=['ambra','quieto','ombroso','segreto','fermo','rapido','lineare','oscuro','nitido','soffice'];
+    const NOUN=['nastro','eco','telex','registro','cartiglio','lucchetto','chiostro','meridiana','valvola','quarzo'];
+    const pick=a=>a[Math.floor(Math.random()*a.length)];
     const tokenKey = `pizzataxi_token_${teamId||'default'}`;
-    let token = localStorage.getItem(tokenKey) || makeToken();
+    let token = localStorage.getItem(tokenKey) || (()=>{const n=Math.floor(Math.random()*90)+10;let t=`${pick(ADJ)}-${pick(NOUN)}-${n}`;if(teamId)t+=`-${teamId}`;return t.toUpperCase();})();
     localStorage.setItem(tokenKey, token);
 
-    // Preimposta data/ora (esempio: 1975-09-15 19:30)
-    (function presetWhen(){
-      const d = new Date(1975, 8, 15); // mesi 0-based
-      const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), x = String(d.getDate()).padStart(2,'0');
-      document.getElementById('date').value = `${y}-${m}-${x}`;
+    // Preimposta data/ora (esempio scenico: 1975-09-15 19:30)
+    (function(){
+      document.getElementById('date').value = '1975-09-15';
       document.getElementById('time').value = '19:30';
     })();
 
-    $msg.addEventListener('input', () => {
-      const len = ($msg.value||'').length;
-      $counter.textContent = `${len} / 200`;
-    });
+    $msg.addEventListener('input', ()=>{ const len=($msg.value||'').length; $counter.textContent = `${len} / 200`; });
 
     async function checkWithWorker(candidate){
       const res = await fetch(CHECK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ teamId, candidate }) });
@@ -197,64 +191,64 @@
       const candidate = digitsOnly($reg.value);
       if(!/^\d{7,12}$/.test(candidate)){ setStatus('Inserisci 7–12 cifre decodificate dai DTMF.', 'warn'); return; }
 
-      // Modalità con Worker o fallback frizione
       if (CHECK_URL){
         try{
           setStatus('⏳ Verifica numero…');
           const data = await checkWithWorker(candidate);
-          if(!data.ok){ setStatus('❌ Numero non valido / già esistente. Riascolta il nastro.', 'warn'); document.getElementById('ship').classList.add('hidden'); return; }
-          // ok
+          if(!data.ok){ setStatus('❌ Numero non valido / già esistente. Riascolta il nastro.', 'warn'); $ship.classList.add('hidden'); return; }
           token = data.callToken || token; localStorage.setItem(tokenKey, token);
           setStatus('✅ Registrazione completata. Puoi creare la spedizione.', 'ok');
-          document.getElementById('ship').classList.remove('hidden'); document.getElementById('rx-reg').textContent = candidate;
+          $ship.classList.remove('hidden'); $rxReg.textContent = candidate;
         }catch(e){ setStatus('Errore di rete. Riprovare tra poco.', 'warn'); }
       } else {
-        // Frizione: nessun segreto nel codice, validazione al desk
+        // Solo frizione: nessun segreto nel codice, verifica al desk
         setStatus('✅ Registrazione locale. (Verifica al desk.)', 'ok');
-        document.getElementById('ship').classList.remove('hidden'); document.getElementById('rx-reg').textContent = candidate;
+        $ship.classList.remove('hidden'); $rxReg.textContent = candidate;
       }
     });
 
-    document.getElementById('copyOrder').addEventListener('click', async () => {
-      const txt = JSON.stringify({
-        reg: digitsOnly(document.getElementById('regNumber').value),
-        pizza:document.getElementById('pizza').value,
-        date:document.getElementById('date').value,
-        time:document.getElementById('time').value,
-        msg:document.getElementById('msg').value,
-        code:document.getElementById('code').value,
+    $copyOrder.addEventListener('click', async () => {
+      const payload = {
+        reg: digitsOnly($reg.value),
+        pizza: $pizza.value,
+        date: $date.value,
+        time: $time.value,
+        msg: $msg.value,
+        code: $code.value,
         token
-      }, null, 2);
-      try{ await navigator.clipboard.writeText(txt); setStatus('📋 Ordine copiato.', 'ok'); }catch{ setStatus('Copia non riuscita.', 'warn'); }
+      };
+      try{ await navigator.clipboard.writeText(JSON.stringify(payload, null, 2)); setStatus('📋 Ordine copiato.', 'ok'); }
+      catch{ setStatus('Copia non riuscita.', 'warn'); }
     });
 
-    document.getElementById('finalize').addEventListener('click', () => {
-      const reg = digitsOnly(document.getElementById('regNumber').value);
+    $finalize.addEventListener('click', () => {
+      const reg = digitsOnly($reg.value);
       if(!reg){ setStatus('Completa la registrazione.', 'warn'); return; }
-      if(!document.getElementById('code').value.trim()){ setStatus('Inserisci il codice richiesto.', 'warn'); return; }
-      const when = `${document.getElementById('date').value} ${document.getElementById('time').value}`;
-      document.getElementById('rx-ts').textContent = 'Conferma generata: ' + fmtNow() + ' — Retro-spedizione 1975 programmata';
-      document.getElementById('rx-reg').textContent = reg;
-      document.getElementById('rx-pizza').textContent = document.getElementById('pizza').value;
-      document.getElementById('rx-when').textContent = when;
-      document.getElementById('rx-msg').textContent = (document.getElementById('msg').value||'—').trim();
-      document.getElementById('rx-code').textContent = document.getElementById('code').value.trim();
-      document.getElementById('rx-token').textContent = token;
-      document.getElementById('receipt').classList.remove('hidden');
+      if(!$code.value.trim()){ setStatus('Inserisci il codice richiesto.', 'warn'); return; }
+      const when = `${$date.value} ${$time.value}`;
+      $rxTs.textContent = 'Conferma generata: ' + fmtNow() + ' — Retro-spedizione 1975 programmata';
+      $rxReg.textContent = reg;
+      $rxPizza.textContent = $pizza.value;
+      $rxWhen.textContent = when;
+      $rxMsg.textContent = ($msg.value||'—').trim();
+      $rxCode.textContent = $code.value.trim();
+      $rxToken.textContent = token;
+      $receipt.classList.remove('hidden');
       window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
       setStatus('🧾 Conferma pronta. Porta la ricevuta allo Sportello Archivio.', 'ok');
     });
 
-    document.getElementById('reset').addEventListener('click', () => {
-      document.getElementById('msg').value=''; document.getElementById('code').value='';
-      document.getElementById('receipt').classList.add('hidden'); document.getElementById('counter').textContent='0 / 200';
+    $reset.addEventListener('click', () => {
+      $msg.value=''; $code.value='';
+      $receipt.classList.add('hidden'); $counter.textContent='0 / 200';
       setStatus(''); window.scrollTo({ top: 0, behavior:'smooth' });
     });
 
-    document.getElementById('print').addEventListener('click', () => { window.print(); });
+    $print.addEventListener('click', () => window.print());
 
-    // Invio con Enter nella registrazione
-    document.getElementById('regNumber').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('doRegister').click(); }});
+    // Invio con Enter
+    $reg.addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); $doRegister.click(); }});
   </script>
 </body>
 </html>
+

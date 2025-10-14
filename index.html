@@ -153,7 +153,7 @@
       try{
         setStatus('⏳ Verifica accesso…');
         const data = await checkNumberWithWorker(candidate);
-        if(!data.ok){ setStatus('❌ Accesso negato. Ricontrolla la sequenza di toni.', 'warn'); $ship.classList.add('hidden'); return; }
+        if(!data.ok){ setStatus('❌ Accesso negato.  il numero già esiste.', 'warn'); $ship.classList.add('hidden'); return; }
         $rxReg.textContent = candidate;
         gateOk();
       }catch(e){ setStatus('Errore di rete. Controlla CHECK_URL/CORS.', 'warn'); }

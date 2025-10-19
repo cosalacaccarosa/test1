@@ -171,7 +171,7 @@
         setStatus('⏳ Verifica luogo/data/ora…');
         const res = await checkOrderWithWorker(place, date, time);
         if(!res.ok){
-          if(!res.place && !res.date && !res.time) setStatus('Luogo, data e ora non validi. Riascolta l’indizio.', 'warn');
+          if(!res.place && !res.date && !res.time) setStatus('Luogo, data e ora non validi.', 'warn');
           else if(!res.place)                     setStatus('Indirizzo non valido.', 'warn');
           else if(!res.date)                      setStatus('Data non valida.', 'warn');
           else                                    setStatus('Ora non valida.', 'warn');
